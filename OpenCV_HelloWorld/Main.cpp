@@ -49,6 +49,41 @@ void DisplayImage(const char *imgName)
 	destroyWindow(imgName);
 }
 
+
+void StartWebCam()
+{
+	//0 is for video input device id. there can be multiple webcams
+	VideoCapture vidCap(0);
+
+	if (!vidCap.isOpened())
+	{
+		cout << "Webcam not found!";
+		return;
+	}
+
+	const char* windName = "Webcam";
+	namedWindow(windName,WINDOW_AUTOSIZE);
+
+	while (true)
+	{
+		Mat vidFrame;
+		
+		if (!vidCap.read(vidFrame))
+		{
+			cout << "Error in reading webcam input";
+			return;
+		}
+		imshow(windName,vidFrame);
+
+		if (waitKey(30) == 27)
+		{			
+			break;
+		}
+	}
+	vidCap.release();
+	destroyWindow(windName);
+}
+
 int main()
 {
 	const char* windName = "Open CV input window";
@@ -73,6 +108,14 @@ int main()
 		{
 			destroyWindow(windName);
 			PlayVideo("MediaFiles/sadain.mp4");
+			break;
+		}
+
+		//Press c or C to render webCam input
+		if (pressedKey == 67 || pressedKey == 99)
+		{
+			destroyWindow(windName);
+			StartWebCam();
 			break;
 		}
 	}
